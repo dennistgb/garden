@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Automated Gardening System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="font-sans text-center bg-green-50">
+    <header class="bg-green-800 text-white p-4 shadow-md">
+        <h1 class="text-2xl font-semibold">Settings</h1>
+    </header>
+
+    <nav class="bg-gray-800 text-white p-2">
+        <a href="/" class="px-3 hover:text-green-300">Home</a>
+        <a href="/settings" class="px-3 hover:text-green-300">Settings</a>
+        <a href="/about" class="px-3 hover:text-green-300">About</a>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="bg-white rounded-lg p-6 shadow-md">
+            <h2 class="text-2xl font-semibold text-green-800 mb-4">System Configuration</h2>
+
+            <form> 
+                <div class="mb-4">
+                    <label for="ph_threshold" class="block text-gray-700 text-sm font-bold mb-2">pH Threshold</label>
+                    <input type="number" id="ph_threshold" name="ph_threshold" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" min="5.5" max="7.5" step="0.1">
+                </div>
+
+                <div class="mb-4">
+                    <label for="temperature_threshold" class="block text-gray-700 text-sm font-bold mb-2">Temperature Threshold (°C)</label>
+                    <input type="number" id="temperature_threshold" name="temperature_threshold" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" min="15" max="35" step="0.5">
+                </div>
+
+                <div class="mb-4">
+                    <label for="light_duration" class="block text-gray-700 text-sm font-bold mb-2">Light Duration (hours)</label>
+                    <input type="number" id="light_duration" name="light_duration" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" min="8" max="24">
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Save Settings
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
