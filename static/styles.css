@@ -1,177 +1,32 @@
-/* Global Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #eaf7e1;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
     text-align: center;
-    margin: 0;
-    padding: 0;
 }
 
-/* Main container */
-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
-    box-sizing: border-box;
+.graph-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
-@media (min-width: 768px) {
-    main {
-        padding: 2rem;
-    }
+.graph {
+    margin: 20px;
 }
 
-/* Header */
-header {
-    background-color: #2f855a; /* Tailwind green-800 */
-    color: white;
-    padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-@media (min-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-}
-
-/* Navigation */
 nav {
-    background-color: #2d3748; /* Tailwind gray-800 */
-    color: white;
-    padding: 0.5rem;
+    text-align: center;
+    margin-top: 20px;
 }
 
 nav a {
-    padding: 0 1rem;
-    color: inherit;
+    margin: 0 15px;
     text-decoration: none;
+    color: #007BFF;
 }
 
 nav a:hover {
-    color: #68d391; /* Tailwind green-300 */
-}
-
-/* Buttons */
-button, .refresh button {
-    background-color: #48bb78; /* Tailwind green-500 */
-    color: white;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-}
-
-button:hover, .refresh button:hover {
-    background-color: #2f855a; /* Tailwind green-700 */
-}
-
-button:focus, .refresh button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.4); /* Focus shadow */
-}
-
-/* Sections */
-section {
-    background-color: white;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1rem;
-}
-
-section h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #2f855a; /* Tailwind green-800 */
-    margin-bottom: 1rem;
-}
-
-/* Forms */
-form div {
-    margin-bottom: 1rem;
-}
-
-label {
-    display: block;
-    color: #4a5568; /* Tailwind gray-700 */
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-input, select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #e2e8f0; /* Tailwind gray-300 */
-    border-radius: 0.25rem;
-    color: #4a5568; /* Tailwind gray-700 */
-    box-sizing: border-box;
-    box-shadow: 0 0 0 1px transparent;
-    transition: box-shadow 0.2s ease-in-out;
-}
-
-input:focus, select:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.4); /* Focus shadow */
-}
-
-/* Sensor Data Grid */
-.sensor-data {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 1rem;
-}
-
-@media (min-width: 768px) {
-    .sensor-data {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1024px) {
-    .sensor-data {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-/* Sensor Items */
-.sensor {
-    background-color: white;
-    border: 1px solid #68d391; /* Tailwind green-300 */
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.sensor:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-}
-
-.sensor h2 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #2f855a; /* Tailwind green-800 */
-    margin-bottom: 0.5rem;
-}
-
-.sensor img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.25rem;
-    margin-top: 0.5rem;
-}
-
-.sensor-icon {
-    font-size: 2rem;
-    color: #2f855a; /* Tailwind green-800 */
-    margin-bottom: 0.5rem;
+    text-decoration: underline;
 }
