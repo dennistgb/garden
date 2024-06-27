@@ -89,6 +89,18 @@
             }
             isPaused = !isPaused;
         }
+
+        function fetchAnalysis(metric) {
+            fetch(`/analysis/${metric}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(`Analysis for ${metric}:\nMean: ${data.mean}\nMedian: ${data.median}\nStandard Deviation: ${data.std_dev}`);
+                    }
+                });
+        }
     </script>
 </head>
 <body>
@@ -109,10 +121,12 @@
         </div>
         <div class="control-panel">
             <button id="pauseButton" onclick="togglePause()">Pause</button>
+            <button onclick="fetchAnalysis('EC Level')">Analyze EC Level</button>
+            <button onclick="fetchAnalysis('Temperature')">Analyze Temperature</button>
+            <button onclick="fetchAnalysis('Humidity')">Analyze Humidity</button>
+            <button onclick="fetchAnalysis('pH Level')">Analyze pH Level</button>
+            <button onclick="fetchAnalysis('Light Level')">Analyze Light Level</button>
         </div>
     </main>
-    <footer>
-        <p>&copy; 2024 Automated Gardening System</p>
-    </footer>
 </body>
 </html>

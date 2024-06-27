@@ -1,8 +1,66 @@
 from flask import Flask, render_template, jsonify
+import pandas as pd
+import numpy as np
 import random
-import time
+import os
+from datetime import datetime
 
 app = Flask(__name__)
+
+# File path for the CSV file
+csv_file = 'database.csv'
+
+# Function to log data into the CSV file
+def log_data(ecval, temp, humidity, phval, light):
+    # Get the current timestamp
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Create a dictionary for the new entry
+    data = {
+        'timestamp': [timestamp],
+        'EC Level': [ecval],
+        'Temperature': [temp],
+        'Humidity': [humidity],
+        'pH Level': [phval],
+        'Light Level': [light]
+    }
+    
+    # Create a DataFrame from the dictionary
+    df = pd.DataFrame(data)
+    
+    # Check if the CSV file exists and is not empty
+    if os.path.exists(csv_file) and os.path.getsize(csv_file) > 0:
+        # Append the DataFrame to the CSV file
+        df.to_csv(csv_file, mode='a', index=False, header=False)
+    else:
+        # Create the CSV file with the header
+        df.to_csv(csv_file, mode='w', index=False, header=True)
+
+# Function to read the data from the CSV file into a DataFrame
+def read_data():
+    # Check if the CSV file exists and is not empty
+    if os.path.exists(csv_file) and os.path.getsize(csv_file) > 0:
+        # Read the CSV file into a DataFrame
+        df = pd.read_csv(csv_file)
+        return df
+    else:
+        # Return an empty DataFrame if the file does not exist or is empty
+        return pd.DataFrame(columns=['timestamp', 'EC Level', 'Temperature', 'Humidity', 'pH Level', 'Light Level'])
+
+# Function to analyze data using NumPy
+def analyze_data(df):
+    analysis = {}
+    columns = ['EC Level', 'Temperature', 'Humidity', 'pH Level', 'Light Level']
+    
+    for col in columns:
+        data = df[col].values
+        analysis[col] = {
+            'mean': np.mean(data),
+            'median': np.median(data),
+            'std_dev': np.std(data)
+        }
+    
+    return analysis
 
 # Global data storage for real-time simulation
 data_storage = {
@@ -34,6 +92,9 @@ def update_data():
     data_storage["ec"].append(random.uniform(1.0, 2.5))
     data_storage["ec"].pop(0)
 
+    # Log the updated data to CSV
+    log_data(data_storage["ec"][-1], data_storage["temperature"][-1], data_storage["humidity"][-1], data_storage["ph"][-1], data_storage["light"][-1])
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -46,6 +107,15 @@ def dashboard():
 def data():
     update_data()
     return jsonify(data_storage)
+
+@app.route('/analysis/<metric>')
+def analysis(metric):
+    df = read_data()
+    analysis_result = analyze_data(df)
+    if metric in analysis_result:
+        return jsonify(analysis_result[metric])
+    else:
+        return jsonify({"error": "Invalid metric"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
