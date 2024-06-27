@@ -2,15 +2,117 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Dashboard - Automated Gardening System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(initializeCharts);
+
+        let phChart, temperatureChart, humidityChart, lightChart, ecChart;
+        let phData, temperatureData, humidityData, lightData, ecData;
+        let options = {
+            hAxis: {title: 'Time'},
+            vAxis: {minValue: 0},
+            legend: 'none',
+            backgroundColor: '#f5f5f5',
+            chartArea: {width: '80%', height: '70%'},
+            tooltip: {isHtml: true},
+            pointSize: 5,
+            colors: ['#4CAF50']
+        };
+
+        let updateInterval;
+        let isPaused = false;
+
+        function initializeCharts() {
+            phData = new google.visualization.DataTable();
+            phData.addColumn('number', 'Time');
+            phData.addColumn('number', 'pH');
+            phChart = new google.visualization.LineChart(document.getElementById('phChart'));
+
+            temperatureData = new google.visualization.DataTable();
+            temperatureData.addColumn('number', 'Time');
+            temperatureData.addColumn('number', 'Temperature (°C)');
+            temperatureChart = new google.visualization.LineChart(document.getElementById('temperatureChart'));
+
+            humidityData = new google.visualization.DataTable();
+            humidityData.addColumn('number', 'Time');
+            humidityData.addColumn('number', 'Humidity (%)');
+            humidityChart = new google.visualization.LineChart(document.getElementById('humidityChart'));
+
+            lightData = new google.visualization.DataTable();
+            lightData.addColumn('number', 'Time');
+            lightData.addColumn('number', 'Light (lux)');
+            lightChart = new google.visualization.LineChart(document.getElementById('lightChart'));
+
+            ecData = new google.visualization.DataTable();
+            ecData.addColumn('number', 'Time');
+            ecData.addColumn('number', 'EC (mS/cm)');
+            ecChart = new google.visualization.LineChart(document.getElementById('ecChart'));
+
+            startFetchingData();
+        }
+
+        function startFetchingData() {
+            updateInterval = setInterval(fetchData, 1000);
+        }
+
+        function fetchData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(phData, phChart, data.time, data.ph, 'pH Level');
+                    updateChart(temperatureData, temperatureChart, data.time, data.temperature, 'Ambient Temperature');
+                    updateChart(humidityData, humidityChart, data.time, data.humidity, 'Relative Humidity');
+                    updateChart(lightData, lightChart, data.time, data.light, 'Ambient Light Intensity');
+                    updateChart(ecData, ecChart, data.time, data.ec, 'EC Level');
+                });
+        }
+
+        function updateChart(dataTable, chart, time, values, title) {
+            dataTable.removeRows(0, dataTable.getNumberOfRows());
+            for (let i = 0; i < time.length; i++) {
+                dataTable.addRow([time[i], values[i]]);
+            }
+            options.title = title;
+            chart.draw(dataTable, options);
+        }
+
+        function togglePause() {
+            if (isPaused) {
+                startFetchingData();
+                document.getElementById('pauseButton').innerText = 'Pause';
+            } else {
+                clearInterval(updateInterval);
+                document.getElementById('pauseButton').innerText = 'Resume';
+            }
+            isPaused = !isPaused;
+        }
+    </script>
 </head>
 <body>
-    <h1>Welcome to the Automated Gardening System</h1>
-    <p>This system monitors and controls various parameters to optimize plant growth.</p>
-    <nav>
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-    </nav>
+    <header>
+        <h1>Automated Gardening System Dashboard</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        </nav>
+    </header>
+    <main>
+        <div class="graph-container">
+            <div class="graph" id="phChart"></div>
+            <div class="graph" id="temperatureChart"></div>
+            <div class="graph" id="humidityChart"></div>
+            <div class="graph" id="lightChart"></div>
+            <div class="graph" id="ecChart"></div>
+        </div>
+        <div class="control-panel">
+            <button id="pauseButton" onclick="togglePause()">Pause</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Automated Gardening System</p>
+    </footer>
 </body>
 </html>
