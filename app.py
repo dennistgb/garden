@@ -13,7 +13,7 @@ csv_file = 'database.csv'
 # Function to log data into the CSV file
 def log_data(ecval, temp, humidity, phval, light):
     # Get the current timestamp
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    timestamp = datetime.now().strftime('%H:%M:%S')
     
     # Create a dictionary for the new entry
     data = {
@@ -64,7 +64,7 @@ def analyze_data(df):
 
 # Global data storage for real-time simulation
 data_storage = {
-    "time": list(range(10)),
+    "time": [datetime.now().strftime('%Y-%m-%d %H:%M:%S') for _ in range(10)],
     "ph": [random.uniform(5.5, 7.5) for _ in range(10)],
     "temperature": [random.uniform(18, 30) for _ in range(10)],
     "humidity": [random.uniform(30, 70) for _ in range(10)],
@@ -73,7 +73,7 @@ data_storage = {
 }
 
 def update_data():
-    current_time = data_storage["time"][-1] + 1
+    current_time = datetime.now().strftime('%H:%M:%S')
     data_storage["time"].append(current_time)
     data_storage["time"].pop(0)
     

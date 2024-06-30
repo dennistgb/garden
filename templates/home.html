@@ -27,27 +27,27 @@
 
         function initializeCharts() {
             phData = new google.visualization.DataTable();
-            phData.addColumn('number', 'Time');
+            phData.addColumn('string', 'Time');
             phData.addColumn('number', 'pH');
             phChart = new google.visualization.LineChart(document.getElementById('phChart'));
 
             temperatureData = new google.visualization.DataTable();
-            temperatureData.addColumn('number', 'Time');
+            temperatureData.addColumn('string', 'Time');
             temperatureData.addColumn('number', 'Temperature (°C)');
             temperatureChart = new google.visualization.LineChart(document.getElementById('temperatureChart'));
 
             humidityData = new google.visualization.DataTable();
-            humidityData.addColumn('number', 'Time');
+            humidityData.addColumn('string', 'Time');
             humidityData.addColumn('number', 'Humidity (%)');
             humidityChart = new google.visualization.LineChart(document.getElementById('humidityChart'));
 
             lightData = new google.visualization.DataTable();
-            lightData.addColumn('number', 'Time');
+            lightData.addColumn('string', 'Time');
             lightData.addColumn('number', 'Light (lux)');
             lightChart = new google.visualization.LineChart(document.getElementById('lightChart'));
 
             ecData = new google.visualization.DataTable();
-            ecData.addColumn('number', 'Time');
+            ecData.addColumn('string', 'Time');
             ecData.addColumn('number', 'EC (mS/cm)');
             ecChart = new google.visualization.LineChart(document.getElementById('ecChart'));
 
@@ -128,5 +128,8 @@
             <button onclick="fetchAnalysis('Light Level')">Analyze Light Level</button>
         </div>
     </main>
+    <footer>
+        <p>&copy; 2024 Automated Gardening System</p>
+    </footer>
 </body>
 </html>
