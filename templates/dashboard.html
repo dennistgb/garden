@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Automated Gardening System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(initializeCharts);
+
+        let phChart, temperatureChart, humidityChart, lightChart, ecChart;
+        let phData, temperatureData, humidityData, lightData, ecData;
+        let options = {
+            hAxis: {title: 'Time'},
+            vAxis: {minValue: 0},
+            legend: 'none',
+            backgroundColor: '#f5f5f5',
+            chartArea: {width: '80%', height: '70%'},
+            tooltip: {isHtml: true},
+            pointSize: 5,
+            colors: ['#4CAF50']
+        };
+
+        let updateInterval;
+        let isPaused = false;
+
+        function initializeCharts() {
+            phData = new google.visualization.DataTable();
+            phData.addColumn('string', 'Time');
+            phData.addColumn('number', 'pH');
+            phChart = new google.visualization.LineChart(document.getElementById('phChart'));
+
+            temperatureData = new google.visualization.DataTable();
+            temperatureData.addColumn('string', 'Time');
+            temperatureData.addColumn('number', 'Temperature (°C)');
+            temperatureChart = new google.visualization.LineChart(document.getElementById('temperatureChart'));
+
+            humidityData = new google.visualization.DataTable();
+            humidityData.addColumn('string', 'Time');
+            humidityData.addColumn('number', 'Humidity (%)');
+            humidityChart = new google.visualization.LineChart(document.getElementById('humidityChart'));
+
+            lightData = new google.visualization.DataTable();
+            lightData.addColumn('string', 'Time');
+            lightData.addColumn('number', 'Light (lux)');
+            lightChart = new google.visualization.LineChart(document.getElementById('lightChart'));
+
+            ecData = new google.visualization.DataTable();
+            ecData.addColumn('string', 'Time');
+            ecData.addColumn('number', 'EC (mS/cm)');
+            ecChart = new google.visualization.LineChart(document.getElementById('ecChart'));
+
+            startFetchingData();
+        }
+
+        function startFetchingData() {
+            updateInterval = setInterval(fetchData, 1000);
+        }
+
+        function fetchData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(phData, phChart, data.time, data.ph, 'pH Level');
+                    updateChart(temperatureData, temperatureChart, data.time, data.temperature, 'Ambient Temperature');
+                    updateChart(humidityData, humidityChart, data.time, data.humidity, 'Relative Humidity');
+                    updateChart(lightData, lightChart, data.time, data.light, 'Ambient Light Intensity');
+                    updateChart(ecData, ecChart, data.time, data.ec, 'EC Level');
+                });
+        }
+
+        function updateChart(dataTable, chart, time, values, title) {
+            dataTable.removeRows(0, dataTable.getNumberOfRows());
+            for (let i = 0; i < time.length; i++) {
+                dataTable.addRow([time[i], values[i]]);
+            }
+            options.title = title;
+            chart.draw(dataTable, options);
+        }
+
+        function togglePause() {
+            if (isPaused) {
+                startFetchingData();
+                document.getElementById('pauseButton').innerText = 'Pause';
+            } else {
+                clearInterval(updateInterval);
+                document.getElementById('pauseButton').innerText = 'Resume';
+            }
+            isPaused = !isPaused;
+        }
+
+        function fetchAnalysis(metric) {
+            fetch(`/analysis/${metric}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(`Analysis for ${metric}:\nMean: ${data.mean}\nMedian: ${data.median}\nStandard Deviation: ${data.std_dev}`);
+                    }
+                });
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Automated Gardening System Dashboard</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        </nav>
+    </header>
+    <main>
+        <div class="graph-container">
+            <div class="graph" id="phChart"></div>
+            <div class="graph" id="temperatureChart"></div>
+            <div class="graph" id="humidityChart"></div>
+            <div class="graph" id="lightChart"></div>
+            <div class="graph" id="ecChart"></div>
+        </div>
+        <div class="control-panel">
+            <button id="pauseButton" onclick="togglePause()">Pause</button>
+            <button onclick="fetchAnalysis('EC Level')">Analyze EC Level</button>
+            <button onclick="fetchAnalysis('Temperature')">Analyze Temperature</button>
+            <button onclick="fetchAnalysis('Humidity')">Analyze Humidity</button>
+            <button onclick="fetchAnalysis('pH Level')">Analyze pH Level</button>
+            <button onclick="fetchAnalysis('Light Level')">Analyze Light Level</button>
+        </div>
+    </main>
+</body>
+</html>
